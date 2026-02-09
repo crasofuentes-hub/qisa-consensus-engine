@@ -1,4 +1,11 @@
+from __future__ import annotations
+
+from .types import ConsensusConfig, StepRecord, Trace
+
 __all__ = [
+    "ConsensusConfig",
+    "StepRecord",
+    "Trace",
     "__version__",
 ]
 
