@@ -1,4 +1,4 @@
-﻿name: ci
+name: ci
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
           python -m ruff format --check .
         shell: bash
 
-      - name: Pytest
+            - name: Pytest (with coverage)
         run: |
-          python -m pytest
+          python -m pytest --cov=src/qisa --cov-report=term-missing --cov-report=xml --cov-fail-under=70
         shell: bash

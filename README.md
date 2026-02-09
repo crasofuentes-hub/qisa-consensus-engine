@@ -94,3 +94,5 @@ MIT (see `LICENSE`).
 5. **No external dependencies** — not an LLM, no external services required.
 
 > QISA does not aim to be creative. It aims to be correct, verifiable, and repeatable.
+
+**Quality gate:** CI enforces test coverage (pytest-cov) with a minimum threshold.
