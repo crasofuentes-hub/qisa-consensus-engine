@@ -3,6 +3,7 @@ from __future__ import annotations
 from .engine import FixpointResult, run_fixpoint
 from .operators import make_perspective_operator
 from .perspectives import Opinion, Perspective
+from .traces import trace_to_json, verify_trace
 from .types import ConsensusConfig, StepRecord, Trace
 
 __all__ = [
@@ -14,6 +15,8 @@ __all__ = [
     "Trace",
     "make_perspective_operator",
     "run_fixpoint",
+    "trace_to_json",
+    "verify_trace",
     "__version__",
 ]
 
