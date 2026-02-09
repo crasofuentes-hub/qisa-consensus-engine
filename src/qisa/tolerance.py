@@ -15,6 +15,7 @@ class ToleranceConfig:
     """
 
     max_steps: int = 64
+    stable_steps_required: int = 2
     eps: float = 0.0  # convergence tolerance; 0.0 means exact equality
 
 

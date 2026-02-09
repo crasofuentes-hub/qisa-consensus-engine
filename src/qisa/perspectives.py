@@ -1,62 +1,77 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 from typing import Any, Callable, Mapping
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Opinion:
-    perspective_id: str
-    proposal: Mapping[str, Any]
+    name: str
+    values: Mapping[str, Any]
     confidence: float
-    rationale: str
+    rationale: str = ""
+
+    @property
+    def perspective_id(self) -> str:
+        """
+        Stable deterministic identifier used for tie-breaking.
+        We derive it from `name` to avoid requiring callers to pass extra fields.
+        """
+        return hashlib.sha256(self.name.encode("utf-8")).hexdigest()[:16]
+
+    @property
+    def proposal(self) -> Mapping[str, Any]:
+        # Backwards-compat: older code refers to "proposal"
+        return self.values
+
+    def as_mapping(self) -> Mapping[str, Any]:
+        # Stable external representation (useful for trace export / debugging)
+        return {
+            "name": self.name,
+            "values": dict(self.values),
+            "confidence": float(self.confidence),
+            "rationale": self.rationale,
+        }
 
 
+# A Perspective is a deterministic callable: (state, step) -> Opinion
 Perspective = Callable[[Mapping[str, Any], int], Opinion]
 
-# --- Public factory: default perspectives ------------------------------------
-# Backwards-compatible entrypoint used by property tests and external callers.
-# This is intentionally robust to Perspective signature changes (name/id, weight/w, etc.).
 
-
-def make_default_perspectives():
+def make_default_perspectives() -> list[Perspective]:
     """
-    Returns a canonical, deterministic set of default perspectives.
-
-    We intentionally build kwargs by introspecting Perspective.__init__ to avoid
-    brittle coupling to field names (e.g., name vs id, weight vs w).
+    Default deterministic perspectives for numeric target scenarios.
+    They must be:
+      - pure (no randomness)
+      - deterministic given (state, step)
+      - return Opinion(values={"x_target": <number>})
     """
-    import inspect
 
-    try:
-        sig = inspect.signature(Perspective)
-        params = set(sig.parameters.keys())
-    except Exception:
-        # If Perspective is not introspectable for any reason, fall back to simplest shape.
-        params = {"name", "weight"}
+    def _get_int(state: Mapping[str, Any], key: str, default: int = 0) -> int:
+        v = state.get(key, default)
+        try:
+            return int(v)
+        except Exception:
+            return default
 
-    def _mk(name: str, weight: float = 1.0):
-        kwargs = {}
-        if "name" in params:
-            kwargs["name"] = name
-        elif "id" in params:
-            kwargs["id"] = name
+    def p_optimist(state: Mapping[str, Any], step: int) -> Opinion:
+        target = _get_int(state, "target", 0)
+        return Opinion("optimist", {"x_target": target + 1}, 0.60, "Slightly above target")
 
-        if "weight" in params:
-            kwargs["weight"] = weight
-        elif "w" in params:
-            kwargs["w"] = weight
+    def p_realist(state: Mapping[str, Any], step: int) -> Opinion:
+        target = _get_int(state, "target", 0)
+        return Opinion("realist", {"x_target": target}, 0.70, "Exact target")
 
-        # If the class expects more params, they must already have defaults.
-        return Perspective(**kwargs)
+    def p_cautious(state: Mapping[str, Any], step: int) -> Opinion:
+        x = _get_int(state, "x", 0)
+        target = _get_int(state, "target", 0)
+        mid = int((x + target) / 2)
+        return Opinion("cautious", {"x_target": mid}, 0.65, "Midpoint between x and target")
 
-    return [
-        _mk("optimist", 1.0),
-        _mk("skeptic", 1.0),
-        _mk("risk_averse", 1.0),
-    ]
+    def p_pessimist(state: Mapping[str, Any], step: int) -> Opinion:
+        target = _get_int(state, "target", 0)
+        return Opinion("pessimist", {"x_target": target - 1}, 0.55, "Slightly below target")
 
-
-from typing import Any, Callable, Mapping
-
-# -----------------------------------------------------------------------------
+    # Orden fijo (importante para determinismo si alguien lo usa directo)
+    return [p_optimist, p_realist, p_cautious, p_pessimist]
