@@ -51,3 +51,8 @@ def make_perspective_operator(
         return new_state, decision_payload
 
     return operator
+
+
+# Backwards-compatible alias used by property tests and external callers.
+# This intentionally points to the canonical builder.
+deterministic_consensus_operator = make_perspective_operator
