@@ -1,0 +1,22 @@
+﻿cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "QISA Consensus Engine (QCE)"
+type: software
+authors:
+  - family-names: "Fuentes Fernández"
+    given-names: "Oscar"
+license: "MIT"
+repository-code: "https://github.com/<YOUR_GITHUB_USERNAME>/qisa-consensus-engine"
+abstract: >
+  QISA (Quantum-Inspired System of AI Consensus) is a deterministic,
+  multi-perspective reasoning system that converges to stable decisions via
+  categorical consensus, adaptive tolerance, coherence metrics, and auditable
+  fixpoint verification with hashed traces.
+keywords:
+  - "AI consensus"
+  - "multi-agent reasoning"
+  - "categorical methods"
+  - "deterministic systems"
+  - "auditability"
+  - "fixpoint"
+  - "convergence"
