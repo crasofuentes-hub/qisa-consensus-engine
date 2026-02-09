@@ -5,6 +5,8 @@ import json
 from dataclasses import asdict, is_dataclass
 from typing import Any
 
+from .types import Trace
+
 
 def _to_jsonable(obj: Any) -> Any:
     if is_dataclass(obj):
@@ -44,9 +46,6 @@ def hash_step(*, step: int, state_hash: str, decision_hash: str, prev_step_hash:
         "prev_step_hash": prev_step_hash,
     }
     return sha256_hex(payload)
-
-
-from .types import Trace
 
 
 def trace_to_json(trace: Trace) -> dict:
