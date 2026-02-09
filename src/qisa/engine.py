@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable, Mapping
 
-from .traces import sha256_hex
+from .traces import hash_step, sha256_hex, zero_hash
 from .types import ConsensusConfig, StepRecord, Trace
 
 
@@ -27,7 +27,6 @@ def run_fixpoint(
 ) -> FixpointResult:
     cfg = config or ConsensusConfig()
 
-    # Defensive checks (no assumptions)
     if cfg.max_steps <= 0:
         raise ValueError("max_steps must be > 0")
     if cfg.stable_steps_required <= 0:
@@ -38,17 +37,30 @@ def run_fixpoint(
 
     records: list[StepRecord] = []
     stable = 0
+    prev = zero_hash()
 
     for step in range(cfg.max_steps):
         new_state, decision = operator(state, step)
+
+        s_hash = sha256_hex(state)
+        d_hash = sha256_hex(decision)
+        step_hash = hash_step(
+            step=step, state_hash=s_hash, decision_hash=d_hash, prev_step_hash=prev
+        )
 
         records.append(
             StepRecord(
                 step=step,
                 state=dict(state),
                 decision=dict(decision),
+                state_hash=s_hash,
+                decision_hash=d_hash,
+                prev_step_hash=prev,
+                step_hash=step_hash,
             )
         )
+
+        prev = step_hash
 
         if dict(new_state) == dict(state):
             stable += 1
@@ -64,6 +76,7 @@ def run_fixpoint(
                 input_hash=input_hash,
                 records=tuple(records),
                 output_hash=output_hash,
+                trace_hash=prev,
             )
             return FixpointResult(
                 converged=True,
@@ -72,13 +85,13 @@ def run_fixpoint(
                 trace=trace,
             )
 
-    # Not converged within max_steps
     output_hash = sha256_hex(state)
     trace = Trace(
         run_id=run_id,
         input_hash=input_hash,
         records=tuple(records),
         output_hash=output_hash,
+        trace_hash=prev,
     )
     return FixpointResult(
         converged=False,

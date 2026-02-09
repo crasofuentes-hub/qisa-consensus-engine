@@ -7,18 +7,10 @@ from typing import Any
 
 
 def _to_jsonable(obj: Any) -> Any:
-    """
-    Convert Python objects to JSON-serializable structures deterministically.
-    - dataclasses -> dict via asdict
-    - tuples -> lists
-    - sets -> sorted lists
-    - dict keys are kept as-is but final JSON encoding sorts keys
-    """
     if is_dataclass(obj):
         return _to_jsonable(asdict(obj))
 
     if isinstance(obj, dict):
-        # Convert values recursively. Keys must be JSON-serializable (strings recommended).
         return {str(k): _to_jsonable(v) for k, v in obj.items()}
 
     if isinstance(obj, (list, tuple)):
@@ -31,12 +23,6 @@ def _to_jsonable(obj: Any) -> Any:
 
 
 def canonical_json_bytes(payload: Any) -> bytes:
-    """
-    Stable JSON encoding:
-    - sort_keys=True ensures deterministic key order
-    - separators remove whitespace differences
-    - ensure_ascii=False keeps unicode stable
-    """
     jsonable = _to_jsonable(payload)
     s = json.dumps(jsonable, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     return s.encode("utf-8")
@@ -44,3 +30,17 @@ def canonical_json_bytes(payload: Any) -> bytes:
 
 def sha256_hex(payload: Any) -> str:
     return hashlib.sha256(canonical_json_bytes(payload)).hexdigest()
+
+
+def zero_hash() -> str:
+    return "0" * 64
+
+
+def hash_step(*, step: int, state_hash: str, decision_hash: str, prev_step_hash: str) -> str:
+    payload = {
+        "step": step,
+        "state_hash": state_hash,
+        "decision_hash": decision_hash,
+        "prev_step_hash": prev_step_hash,
+    }
+    return sha256_hex(payload)
