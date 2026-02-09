@@ -1,0 +1,28 @@
+{
+  "title": "QISA Consensus Engine (QCE)",
+  "description": "Deterministic, auditable consensus engine based on fixpoint semantics, tamper-evident trace hashing, and reproducible benchmarks.",
+  "license": "MIT",
+  "version": "0.1.1",
+  "creators": [
+    {
+      "name": "Fuentes Fernández, Oscar",
+      "affiliation": "Independent Researcher"
+    }
+  ],
+  "keywords": [
+    "ai-consensus",
+    "deterministic-ai",
+    "multi-agent-systems",
+    "explainable-ai",
+    "ai-auditability",
+    "fixpoint",
+    "ai-safety"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/crasofuentes-hub/qisa-consensus-engine",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}
