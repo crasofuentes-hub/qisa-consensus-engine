@@ -6,7 +6,7 @@ authors:
   - family-names: "Fuentes Fernández"
     given-names: "Oscar"
 license: "MIT"
-repository-code: "https://github.com/<YOUR_GITHUB_USERNAME>/qisa-consensus-engine"
+repository-code: "https://github.com/crasofuentes-hub/qisa-consensus-engine"
 abstract: >
   QISA (Quantum-Inspired System of AI Consensus) is a deterministic,
   multi-perspective reasoning system that converges to stable decisions via
