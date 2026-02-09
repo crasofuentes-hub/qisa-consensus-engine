@@ -80,3 +80,17 @@ MIT (see `LICENSE`).
 - Add additional benchmark scenarios (non-numeric, adversarial disagreement, constrained consensus).
 - Extend trace schema for richer provenance (inputs, operator params, perspective metadata).
 - Add formal verification notes and/or proofs for key invariants (soundness of trace verification).
+
+## What problem does QISA solve?
+
+**QISA (Quantum-Inspired System of AI Consensus)** addresses a core problem in automated decision systems:  
+**how to produce reproducible, auditable, and deterministic decisions when multiple perspectives disagree.**
+
+### In five clear points
+1. **Deterministic consensus (non-stochastic)** — same inputs, same outputs.
+2. **Verifiable audit trail** — hash-chained traces detect tampering.
+3. **Fixpoint convergence** — stability via idempotence prevents loops.
+4. **Comparable baselines** — reproducible benchmark harness + pinned results.
+5. **No external dependencies** — not an LLM, no external services required.
+
+> QISA does not aim to be creative. It aims to be correct, verifiable, and repeatable.
