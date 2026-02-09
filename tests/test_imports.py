@@ -1,4 +1,4 @@
-﻿def test_package_imports():
+def test_package_imports():
     import qisa  # noqa: F401
 
 
