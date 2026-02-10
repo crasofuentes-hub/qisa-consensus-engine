@@ -105,7 +105,6 @@ def run_fixpoint(
         trace=trace,
         trace_hash=trace.trace_hash,
         stop_reason="max_steps_exceeded",
-        quality_metrics={},
     )
 
     if cfg.on_non_convergence == "raise":

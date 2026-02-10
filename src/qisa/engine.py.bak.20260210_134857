@@ -6,7 +6,6 @@ from typing import Any, Mapping
 from .traces import hash_step, sha256_hex, zero_hash
 from .types import ConsensusConfig, StepRecord, Trace
 from .errors import NonConvergentError
-from .operators import ConsensusOperator
 
 
 @dataclass(frozen=True, slots=True)
@@ -85,8 +84,6 @@ def run_fixpoint(
                 steps=step + 1,
                 final_state=state,
                 trace=trace,
-                trace_hash=trace.trace_hash,
-                stop_reason="converged",
             )
 
     output_hash = sha256_hex(state)
@@ -103,9 +100,6 @@ def run_fixpoint(
         steps=cfg.max_steps,
         final_state=state,
         trace=trace,
-        trace_hash=trace.trace_hash,
-        stop_reason="max_steps_exceeded",
-        quality_metrics={},
     )
 
     if cfg.on_non_convergence == "raise":
