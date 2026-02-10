@@ -28,3 +28,6 @@ _ci_artifacts/
 .hypothesis/
 coverage.xml
 coverage-*/
+# Local bench outputs
+bench/results_scenario_v1.json
+
