@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 __pycache__/
 *.py[cod]
 *.pyd
@@ -22,3 +22,9 @@ Thumbs.db
 
 # Local artifacts
 _ci_artifacts/
+
+# Local venvs / hypothesis / coverage artifacts
+.venv*/
+.hypothesis/
+coverage.xml
+coverage-*/

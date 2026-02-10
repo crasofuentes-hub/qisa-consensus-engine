@@ -1,6 +1,6 @@
 [![CI](https://github.com/crasofuentes-hub/qisa-consensus-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/crasofuentes-hub/qisa-consensus-engine/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-%E2%89%A570%25-brightgreen)](#coverage)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18537546.svg)](https://doi.org/10.5281/zenodo.18537546)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18598067.svg)](https://doi.org/10.5281/zenodo.18598067)
 [![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue)](https://www.python.org/)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 
