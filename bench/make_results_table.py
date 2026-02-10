@@ -6,7 +6,7 @@ from pathlib import Path
 
 def main() -> None:
     p = Path("bench/results_scenario_v1.json")
-    data = json.loads(p.read_text(encoding="utf-8"))
+    data = json.loads(p.read_text(encoding="utf-8-sig"))
 
     order = ["qisa", "single", "weighted_avg", "majority_binned"]
 
