@@ -44,3 +44,10 @@ jobs:
         run: |
           python -m pytest --cov=src/qisa --cov-report=term-missing --cov-report=xml --cov-fail-under=70
         shell: bash
+ - name: Upload coverage artifact (coverage.xml)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: coverage.xml
+          if-no-files-found: error
