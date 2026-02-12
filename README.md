@@ -1,4 +1,4 @@
-[![CI](https://github.com/crasofuentes-hub/qisa-consensus-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/crasofuentes-hub/qisa-consensus-engine/actions/workflows/ci.yml)
+﻿[![CI](https://github.com/crasofuentes-hub/qisa-consensus-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/crasofuentes-hub/qisa-consensus-engine/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-%E2%89%A570%25-brightgreen)](#coverage)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18598067.svg)](https://doi.org/10.5281/zenodo.18598067)
 [![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue)](https://www.python.org/)
@@ -54,3 +54,18 @@ python -m venv .venv
 source .venv/bin/activate  # Windows: .\.venv\Scripts\Activate.ps1
 python -m pip install -U pip
 python -m pip install -e ".[dev]"
+
+<!-- QISA_META_START -->
+
+## Tools (Trace export + external verification)
+- Paper-grade instructions: 	ools/README.md
+- Quick demo:
+  - Host: python tools\export_trace_demo.py then python tools\verify_trace_json.py tools\_artifacts\trace_demo.json
+  - Docker: docker run --rm -v \C:\repos\qisa-consensus-engine:/app qisa-consensus-engine:dev python tools/export_trace_demo.py
+
+## Benchmarks (adversarial)
+- Latest results (generated): enchmarks\_results\results.md
+- Re-run: python .\benchmarks\bench_adversarial.py
+
+<!-- QISA_META_END -->
+
