@@ -38,6 +38,7 @@ bench/results_scenario_v1.json
 # Local dev artifacts
 _dev/
 
+<<<<<<< HEAD
 
 # tools artifacts (generated)
 tools/_artifacts/
@@ -45,3 +46,11 @@ tools/_artifacts/
 
 benchmarks/_results/
 
+=======
+>>>>>>> origin/feat/v0.2.0-nonconvergence-quality
+
+# --- Local backups (do not commit) ---
+_backup/
+
+# --- Benchmark outputs (do not commit) ---
+benchmarks/_results/
