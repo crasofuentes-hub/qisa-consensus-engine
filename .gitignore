@@ -38,3 +38,7 @@ bench/results_scenario_v1.json
 # Local dev artifacts
 _dev/
 
+
+# tools artifacts (generated)
+tools/_artifacts/
+
