@@ -1,0 +1,5 @@
+| case | status | ok | ms | peak_kb | steps | stop_reason | trace_hash |
+|---|---|---:|---:|---:|---:|---|---|
+| choice_conflict_3way | OK | True | 21.488 | 8 | 5 | converged | c21cc6cb7f1c6d7e2228dff2edd819bc6e7ec6d735c45df2b546018e974fc918 |
+| deadlock_flipflop | OK | True | 0.664 | 8 | 5 | converged | 23f768003d117e19baed306eab640604587b21a32fba1dfad03d0f80d5e7890b |
+| numeric_spread | OK | True | 0.695 | 6 | 5 | converged | 86e17a952d5afc46eadcd4be002b36cf5762f26b0512b40798d0d1f39ebaa868 |
