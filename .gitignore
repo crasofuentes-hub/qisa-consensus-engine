@@ -42,3 +42,6 @@ _dev/
 # tools artifacts (generated)
 tools/_artifacts/
 
+
+benchmarks/_results/
+
