@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "qisa-consensus-engine"
-version = "0.2.3"
+version = "0.2.4"
 description = "Deterministic multi-perspective consensus engine with fixpoint convergence, auditability, and categorical coherence metrics."
 readme = "README.md"
 requires-python = ">=3.11"
