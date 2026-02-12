@@ -2,91 +2,105 @@ from __future__ import annotations
 
 from collections import Counter
 from math import log2
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
+
+from .types import StepRecord, Trace
 
 
-def _is_number(x: Any) -> bool:
-    return isinstance(x, (int, float)) and not isinstance(x, bool)
-
-
-def disagreement_entropy(values: list[Any]) -> float:
+def disagreement_entropy(decisions: Sequence[Mapping[str, Any]]) -> float:
     """
-    Shannon entropy over discrete values.
-    Deterministic for a fixed list order (Counter ignores order; stable via sorted keys).
+    Entropía (Shannon) de desacuerdo basada en una clave "choice" si existe;
+    si no existe, usa la serialización estable del dict (sorted items).
+    Retorna >= 0.0.
     """
-    if not values:
-        return 0.0
-    c = Counter(values)
-    total = sum(c.values())
-    if total <= 0:
+    if not decisions:
         return 0.0
 
-    # stable ordering
-    items = sorted(c.items(), key=lambda kv: repr(kv[0]))
+    labels: list[str] = []
+    for d in decisions:
+        if not isinstance(d, Mapping):
+            labels.append(str(d))
+            continue
+        if "choice" in d:
+            labels.append(str(d["choice"]))
+        else:
+            labels.append(str(sorted(d.items(), key=lambda kv: str(kv[0]))))
+
+    c = Counter(labels)
+    n = sum(c.values())
+    if n <= 0:
+        return 0.0
+
     h = 0.0
-    for _, cnt in items:
-        p = cnt / total
+    for k in c:
+        p = c[k] / n
         if p > 0:
             h -= p * log2(p)
     return h
 
 
-def numeric_variance(values: list[float]) -> float:
+def numeric_variance(values: Sequence[float]) -> float:
+    """Varianza poblacional simple (determinista)."""
     if not values:
         return 0.0
     n = float(len(values))
-    mean = sum(values) / n
-    return sum((v - mean) ** 2 for v in values) / n
+    mu = sum(values) / n
+    return sum((x - mu) ** 2 for x in values) / n
 
 
 def compute_quality_metrics(
     *,
-    initial_state: Mapping[str, Any],
-    final_state: Mapping[str, Any],
-    last_decision: Mapping[str, Any] | None,
-    per_key_proposals: Mapping[str, list[Any]] | None = None,
+    trace: Trace | None = None,
+    records: Sequence[StepRecord] | None = None,
+    decisions: Sequence[Mapping[str, Any]] | None = None,
+    final_state: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
-    Minimal, production-useful quality metrics.
+    API NORMALIZADA.
 
-    - changed_keys_ratio: how much the final state differs from initial (by key equality)
-    - mean_coherence: if decision provides 'coherence'
-    - per_key_entropy: entropy over proposals per key (if provided)
-    - per_key_variance: variance over numeric proposals per key (if provided)
+    - Preferencia de fuente:
+        1) trace -> records
+        2) records
+        3) decisions (+ opcional final_state)
+
+    - Retrocompatible:
+        si lo llamas sin argumentos, devuelve {}.
     """
-    keys = sorted(set(initial_state.keys()) | set(final_state.keys()))
-    changed = 0
-    for k in keys:
-        if initial_state.get(k) != final_state.get(k):
-            changed += 1
-    changed_keys_ratio = (changed / len(keys)) if keys else 0.0
+    # Retrocompatibilidad explícita: no args -> {}
+    if trace is None and records is None and decisions is None and final_state is None:
+        return {}
 
-    mean_coherence = None
-    if isinstance(last_decision, Mapping) and "coherence" in last_decision:
-        try:
-            mean_coherence = float(last_decision["coherence"])
-        except Exception:
-            mean_coherence = None
+    if records is None and trace is not None:
+        records = trace.records
 
-    per_key_entropy: dict[str, float] = {}
-    per_key_variance: dict[str, float] = {}
+    if decisions is None and records is not None:
+        decisions = [r.decision for r in records]
 
-    if per_key_proposals:
-        for k in sorted(per_key_proposals.keys()):
-            vals = list(per_key_proposals[k])
-            per_key_entropy[k] = disagreement_entropy(vals)
+    if decisions is None:
+        decisions = []
 
-            num = [float(v) for v in vals if _is_number(v)]
-            if num:
-                per_key_variance[k] = numeric_variance(num)
+    # Métricas base
+    ent = disagreement_entropy(decisions)
+
+    # Ejemplo: si hay números en decisions bajo x_target, medimos varianza
+    x_targets: list[float] = []
+    for d in decisions:
+        if isinstance(d, Mapping) and "x_target" in d:
+            try:
+                x_targets.append(float(d["x_target"]))
+            except Exception:
+                pass
+
+    var = numeric_variance(x_targets)
 
     out: dict[str, Any] = {
-        "changed_keys_ratio": changed_keys_ratio,
+        "disagreement_entropy": float(ent),
+        "x_target_variance": float(var),
+        "decision_count": int(len(decisions)),
     }
-    if mean_coherence is not None:
-        out["mean_coherence"] = mean_coherence
-    if per_key_entropy:
-        out["per_key_entropy"] = per_key_entropy
-    if per_key_variance:
-        out["per_key_variance"] = per_key_variance
+
+    # final_state opcional: agregamos un hash/summary determinista mínimo
+    if final_state is not None:
+        out["final_state_keys"] = sorted([str(k) for k in final_state.keys()])
+
     return out

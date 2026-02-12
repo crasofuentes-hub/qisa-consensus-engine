@@ -34,3 +34,7 @@ bench/results_scenario_v1.json
 # local editor/patch backups
 *.bak
 *.bak.*
+
+# Local dev artifacts
+_dev/
+
