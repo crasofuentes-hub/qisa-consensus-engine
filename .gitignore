@@ -54,3 +54,5 @@ _backup/
 
 # --- Benchmark outputs (do not commit) ---
 benchmarks/_results/
+benchmarks/_results/**
+tools/_artifacts/**
