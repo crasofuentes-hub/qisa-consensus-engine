@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Mapping
+from typing import Any, Mapping
 
 from .traces import hash_step, sha256_hex, zero_hash
 from .types import ConsensusConfig, StepRecord, Trace
+from .errors import NonConvergentError
+from .operators import ConsensusOperator
 
 
 @dataclass(frozen=True, slots=True)
@@ -12,10 +14,10 @@ class FixpointResult:
     converged: bool
     steps: int
     final_state: Mapping[str, Any]
+    trace_hash: str
     trace: Trace
-
-
-ConsensusOperator = Callable[[Mapping[str, Any], int], tuple[Mapping[str, Any], Mapping[str, Any]]]
+    stop_reason: str
+    quality_metrics: Mapping[str, Any] | None = None
 
 
 def run_fixpoint(
@@ -83,6 +85,8 @@ def run_fixpoint(
                 steps=step + 1,
                 final_state=state,
                 trace=trace,
+                trace_hash=trace.trace_hash,
+                stop_reason="converged",
             )
 
     output_hash = sha256_hex(state)
@@ -93,9 +97,31 @@ def run_fixpoint(
         output_hash=output_hash,
         trace_hash=prev,
     )
-    return FixpointResult(
+    # non-convergent path
+    result = FixpointResult(
         converged=False,
         steps=cfg.max_steps,
         final_state=state,
         trace=trace,
+        trace_hash=trace.trace_hash,
+        stop_reason="max_steps_exceeded",
+        quality_metrics={},
     )
+
+    if cfg.on_non_convergence == "raise":
+        raise NonConvergentError(
+            run_id=run_id,
+            max_steps=cfg.max_steps,
+            stable_steps_required=cfg.stable_steps_required,
+            steps=cfg.max_steps,
+            last_state=state,
+            trace_hash=(
+                trace.trace_hash
+                if hasattr(trace, "trace_hash")
+                else (trace.records[-1].step_hash if getattr(trace, "records", None) else "")
+            ),
+            stop_reason="max_steps_exceeded",
+        )
+
+    # default: "last"
+    return result

@@ -1,22 +1,27 @@
-# --- Backwards-compatible config name ----------------------------------------
-# Some external callers/tests expect ToleranceConfig to exist in qisa.tolerance.
-# We provide a stable dataclass wrapper that can be used by the engine.
+from __future__ import annotations
+
 from dataclasses import dataclass
+from typing import Literal
 
 
-@dataclass(frozen=True, slots=True)
+OnNonConvergence = Literal["raise", "last", "best_effort", "partial"]
+
+
+@dataclass(frozen=True)
 class ToleranceConfig:
     """
-    Minimal, stable tolerance configuration for deterministic fixpoint runs.
+    Core convergence controls.
 
-    Notes:
-    - Keep defaults conservative and deterministic.
-    - If the engine evolves, keep this class as a compatibility surface.
+    - max_steps: hard bound on iterations.
+    - eps: tolerance used by operators/perspectives (when applicable).
+    - stable_steps_required: number of consecutive stable steps to declare convergence.
+    - on_non_convergence: policy when convergence is not reached.
+    - oscillation_window: cycle detection window for repeated state hashes.
     """
 
-    max_steps: int = 64
+    max_steps: int = 20
+    eps: float = 1e-9
     stable_steps_required: int = 2
-    eps: float = 0.0  # convergence tolerance; 0.0 means exact equality
 
-
-# -----------------------------------------------------------------------------
+    on_non_convergence: OnNonConvergence = "raise"
+    oscillation_window: int = 6

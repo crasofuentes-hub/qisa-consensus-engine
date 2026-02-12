@@ -1,9 +1,18 @@
-from __future__ import annotations
-
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Protocol, Sequence
 
 from .consensus import choose_consensus
 from .perspectives import Perspective
+
+
+class ConsensusOperator(Protocol):
+    def __call__(
+        self, state: Mapping[str, Any], step: int
+    ) -> tuple[Mapping[str, Any], Mapping[str, Any]]: ...
+
+
+def __call__(
+    self, state: Mapping[str, Any], step: int
+) -> tuple[Mapping[str, Any], Mapping[str, Any]]: ...
 
 
 def make_perspective_operator(

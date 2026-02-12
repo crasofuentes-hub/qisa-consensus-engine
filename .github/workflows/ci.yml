@@ -44,6 +44,13 @@ jobs:
         run: |
           python -m pytest --cov=src/qisa --cov-report=term-missing --cov-report=xml:coverage.xml --cov-fail-under=70
 
+      - name: Coverage (pytest)
+        shell: pwsh
+        run: |
+          python -m pip install -U coverage
+          python -m coverage run --source=src -m pytest -q
+          python -m coverage report --fail-under=95 -m
+
       - name: Upload coverage artifact (coverage.xml)
         if: always()
         uses: actions/upload-artifact@v4
