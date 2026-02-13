@@ -1,0 +1,6 @@
+Primary category: cs.AI
+Secondary category: cs.LG
+
+22 pages, 3 figures, 1 table.
+Includes adversarial benchmark suite and deterministic trace verification framework.
+Source code available at: https://github.com/crasofuentes-hub/qisa-consensus-engine

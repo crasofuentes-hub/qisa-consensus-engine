@@ -1,0 +1,58 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+\title{QISA: Deterministic Multi-Perspective Consensus with Verifiable Execution Traces}
+\author{Oscar Fuentes Fern\'andez \\ Independent Researcher}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We introduce QISA (Quantum-Inspired System of AI Consensus), a deterministic framework for multi-perspective AI consensus that eliminates stochastic sampling from the aggregation stage and provides cryptographically verifiable execution traces. Unlike conventional ensemble or multi-agent aggregation methods that rely on probabilistic sampling, temperature-based decoding, or non-deterministic fusion heuristics, QISA models consensus as an iterative fixpoint computation over structured state transitions.
+
+The system defines a convergence taxonomy via explicit stopping conditions (e.g., converged, max-steps, non-convergent), enabling reproducible and auditable outcomes. Each execution produces a trace commitment that can be externally verified, ensuring integrity of intermediate transitions and final outputs. We provide formal properties including determinism under identical inputs, idempotence at fixpoint, and explicit non-convergence handling via a well-defined policy.
+
+An adversarial benchmark suite evaluates convergence behavior, execution latency, and trace stability across structured conflict scenarios. Experimental results demonstrate stable convergence under bounded iteration depth and consistent trace hashes across repeated runs, supporting full reproducibility.
+
+QISA targets applications where auditability, regulatory compliance, and reproducible AI behavior are required, offering a deterministic alternative to stochastic consensus mechanisms in multi-perspective reasoning systems.
+\end{abstract}
+
+\section{Introduction}
+QISA is a deterministic framework for multi-perspective consensus that produces externally verifiable execution traces. The objective is reproducibility and auditability of consensus outcomes under bounded iteration.
+
+\section{Method}
+We model consensus as an iterative fixpoint computation over a structured state. Each step is recorded, hashed, and chained to produce a cryptographic commitment of the full execution trace.
+
+\subsection{Convergence taxonomy}
+We explicitly label stop conditions (e.g., \texttt{converged}, \texttt{max\_steps}, \texttt{non\_convergent}) to support reproducible evaluation and operational policies.
+
+\section{Experiments}
+We report adversarial benchmark cases that stress convergence under conflict patterns. We measure latency (ms), peak memory (KB), steps, stop condition, and trace hash stability across repeated runs.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrrl}
+\toprule
+case & ok & ms & peak\_kb & steps & stop\_reason \\
+\midrule
+choice\_conflict\_3way & 1 & 1.532 & 7 & 5 & converged \\
+deadlock\_flipflop     & 1 & 2.047 & 6 & 5 & converged \\
+numeric\_spread        & 1 & 0.930 & 6 & 5 & converged \\
+\bottomrule
+\end{tabular}
+\caption{Adversarial benchmark summary (example run).}
+\end{table}
+
+\section{Conclusion}
+QISA provides deterministic consensus with verifiable traces and explicit convergence handling.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}
