@@ -69,3 +69,10 @@ python -m pip install -e ".[dev]"
 
 <!-- QISA_META_END -->
 
+---
+
+## Kemrai Linkage
+
+This repository is part of the technical and scientific foundation behind **Kemrai** (https://www.kemrai.com).  
+It exists as public evidence of rigorous engineering (determinism, reproducibility, traceability) and research-grade methodology.
+
